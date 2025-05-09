@@ -1,0 +1,49 @@
+// 1. Avg_Rides_Per_Casual_Rider = 
+    DIVIDE(
+        CALCULATE(
+            COUNTROWS('202401-divvy-tripdata'),
+            FILTER('202401-divvy-tripdata', '202401-divvy-tripdata'[member_casual] = "casual")
+        ),
+        CALCULATE(
+            DISTINCTCOUNT('202401-divvy-tripdata'[ride_id]),
+            FILTER('202401-divvy-tripdata', '202401-divvy-tripdata'[member_casual] = "casual")
+        )
+    )
+
+
+// 2. Casual Rides = 
+    COUNTROWS(FILTER('202401-divvy-tripdata', '202401-divvy-tripdata'[member_casual] = "casual"))
+
+// 3. Percentage of Casual Riders = 
+    COUNTROWS(FILTER('202401-divvy-tripdata', '202401-divvy-tripdata'[member_casual] = "casual"))/
+    COUNTROWS('202401-divvy-tripdata')
+
+// 4. Top End Station = 
+    MAXX(
+        TOPN(
+            1,
+            SUMMARIZE(
+                '202401-divvy-tripdata',
+                '202401-divvy-tripdata'[end_station_name],
+                "RideCount", COUNTROWS()
+            ),
+            [RideCount],
+            DESC
+        ),
+        '202401-divvy-tripdata'[end_station_name]
+    )
+
+// 5. Top pickup station = 
+    MAXX(
+        TOPN(
+            1,
+            SUMMARIZE(
+                '202401-divvy-tripdata',
+                '202401-divvy-tripdata'[start_station_name],
+                "RideCount", COUNTROWS()
+            ),
+            [RideCount],
+            DESC
+        ),
+        '202401-divvy-tripdata'[start_station_name]
+    )
